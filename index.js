@@ -1,8 +1,8 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const keys = require('./config/keys')
-const { adminJs } = require('./routes/admin')
-
+const express = require("express")
+const mongoose = require("mongoose")
+const keys = require("./config/keys")
+const { adminJs } = require("./routes/admin")
+const helmet = require("helmet")
 // Conncting to MongoDB
 mongoose.Promise = global.Promise
 mongoose.connect(keys.mongoURI, {
@@ -14,20 +14,21 @@ mongoose.connect(keys.mongoURI, {
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(helmet())
 
 // Require Models
-require('./models/Flat')
+require("./models/Flat")
 
 // Require Routes
-const flatRouter = require('./routes/flatRoutes')
-const { adminJsRouter } = require('./routes/admin')
+const flatRouter = require("./routes/flatRoutes")
+const { adminJsRouter } = require("./routes/admin")
 
 // Use Routes
-app.use('/flat', flatRouter)
+app.use("/flat", flatRouter)
 app.use(adminJs.options.rootPath, adminJsRouter)
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello from server!' })
+app.get("/", (req, res) => {
+  res.json({ message: "Hello from server!" })
 })
 
 const PORT = process.env.PORT || 3000
